@@ -8,11 +8,19 @@ def get_recap(game_id):
         params={"games": game_id}
     )
     data = r.json()
-    recap = [i for i in data['results']['items'] if i['taxonomy']['categories'].get('game-recap')]
+    recap = [i for i in data['results']['items'] if i['taxonomy'].get('categories', {}).get('game-recap')]
     if recap:
         url_ = recap[0].get('endeavorVideo')
     return url_
 
 
 if __name__ == '__main__':
-    print(get_recap('0042000312'))
+    from game_crawler import get_games
+    game_date, games = get_games()
+    print(game_date)
+
+    for i in games:
+        m3u8_url = get_recap(i['gameId'])
+        game_code = i['gameCode']
+        print(game_code, m3u8_url)
+
